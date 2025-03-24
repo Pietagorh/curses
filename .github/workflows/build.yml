@@ -118,7 +118,9 @@ jobs:
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: ${{ startsWith(github.ref, 'refs/heads/releases/') && endsWith(github.ref, '-pre')}}
-          args: "${{ matrix.args }} ${{ (matrix.platform == 'windows-latest' && steps.version.outputs.value) && '--no-bundle' || null }}"
+          # Use different tauri config if prerelease (msi bundles only support x.x.x versioning)
+          args: "${{ matrix.args }}
+          --config .github/workflows/tauri.build${{ endsWith(steps.version.outputs.value, '-pre') && '-pre' || null }}.conf.json"
       - uses: actions/upload-artifact@v4
         with:
           name: AppImage
