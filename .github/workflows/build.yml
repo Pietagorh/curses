@@ -120,7 +120,7 @@ jobs:
           prerelease: ${{ startsWith(github.ref, 'refs/heads/releases/') && endsWith(github.ref, '-pre')}}
           # Use different tauri config if prerelease (msi bundles only support x.x.x versioning)
           args: "${{ matrix.args }}
-          --config .github/workflows/tauri.build${{ endsWith(steps.version.outputs.value, '-pre') && '-pre' || null }}.conf.json"
+          --config .github/workflows/Tauri.build${{ endsWith(steps.version.outputs.value, '-pre') && '-pre' || null }}.toml"
       - uses: actions/upload-artifact@v4
         with:
           name: AppImage
