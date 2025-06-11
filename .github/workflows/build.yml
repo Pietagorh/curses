@@ -81,7 +81,8 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: pnpm i --frozen-lockfile # change this to npm or pnpm depending on which one you use.
 
-      - id: tauri-artifacts
+      - name: Build tauri app
+        id: tauri-artifacts
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -93,15 +94,18 @@ jobs:
           prerelease: ${{ startsWith(github.ref, 'refs/heads/releases/') && endsWith(github.ref, '-pre')}}
           # Use different tauri config if prerelease (msi bundles only support x.x.x versioning)
           args: "${{ matrix.args }} --config .github/workflows/configs/Tauri.build${{ endsWith(steps.version.outputs.value, '-pre') && '-pre' || null }}.toml"
-      - uses: actions/upload-artifact@v4
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
         with:
           name: AppImage
           path: target/release/bundle/appimage/curses_${{steps.version.outputs.value}}_amd64.AppImage
-      - uses: actions/upload-artifact@v4
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
         with:
           name: WindowsEXE
           path: target/release/curses.exe
-      - uses: actions/upload-artifact@v4
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
         with:
           name: WindowsInstaller
           path: target/release/bundle/msi/curses_${{steps.version.outputs.value}}_x64_en-US.msi
